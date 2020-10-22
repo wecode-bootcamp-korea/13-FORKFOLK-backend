@@ -5,25 +5,25 @@ from django.db   import models
 # Create your models here.
 
 class ShopCategory(models.Model):
-    name = models.CharField(max_length=50)
+    name  = models.CharField(max_length=50)
 
     class Meta:
         db_table = 'shop_categories'
 
 class Product(models.Model):
-    category    = models.ForeignKey(ShopCategory, on_delete=models.CASCADE)
-    name        = models.CharField(max_length=50)
-    price       = models.IntegerField(default=0)
-    description = models.TextField()
-    shipping    = models.TextField()
-    orders      = models.ManyToManyField('user.Order',through='Cart', related_name='orders')
+    category         = models.ForeignKey(ShopCategory, on_delete=models.CASCADE)
+    name             = models.CharField(max_length=50)
+    description      = models.TextField()
+    shipping         = models.TextField()
+    orders           = models.ManyToManyField('order.Order', through='Cart', related_name='orders')
+    related_products = models.ManyToManyField('self', through='RelatedProduct', symmetrical=False)
 
     class Meta:
         db_table = 'products'
 
 class RelatedProduct(models.Model):
-    product         = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
-    related_product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='related_product')
+    from_product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='to_product')
+    to_product   = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='from_product')
 
     class Meta:
         db_table = 'related_products'
@@ -37,7 +37,7 @@ class ProductImage(models.Model):
 
 class Cart(models.Model):
     product  = models.ForeignKey(Product, on_delete=models.CASCADE)
-    order    = models.ForeignKey('user.Order', on_delete=models.CASCADE)
+    order    = models.ForeignKey('order.Order', on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)
 
     class Meta:
