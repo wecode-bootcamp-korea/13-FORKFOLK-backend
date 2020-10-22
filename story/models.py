@@ -7,17 +7,18 @@ class MainCategory(models.Model):
         db_table = 'main_categories'
 
 class SubCategory(models.Model):
-    name     = models.CharField(max_length=50)
-    category = models.ForeignKey(MainCategory, on_delete=models.CASCADE)
+    name         = models.CharField(max_length=50)
+    category     = models.ForeignKey(MainCategory, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'sub_categories'
 
 class Story(models.Model):
-    sub_category = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
-    title        = models.CharField(max_length=100)
-    content      = models.TextField()
-    description  = models.TextField()
+    sub_category    = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
+    title           = models.CharField(max_length=100)
+    content         = models.TextField()
+    description     = models.TextField()
+    related_stories = models.ManyToManyField('self', through='RelatedStory', symmetrical=False)
 
     class Meta:
         db_table = 'stories'
@@ -30,8 +31,8 @@ class StoryImage(models.Model):
         db_table = 'story_images'
 
 class RelatedStory(models.Model):
-    story         = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='story')
-    related_story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='related_story')
+    from_story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='to_story')
+    to_story   = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='from_story')
 
     class Meta:
         db_table = 'related_stories'
