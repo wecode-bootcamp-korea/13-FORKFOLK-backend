@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'user',
     'product',
-    'order'
-    'story',
+    'order',
+    'story'
 ]
 
 MIDDLEWARE = [
