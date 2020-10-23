@@ -12,18 +12,17 @@ class SignUpView(View):
     def post(self,request):
         try:
             data     = json.loads(request.body)
-            email    = data['email']
             name     = data['name']
+            email    = data['email']
             password = data['password']
             if re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email) == None:
-                return JsonResponse({"message":"Email is not valid."},status=400)
+                return JsonResponse({"message":"User is not valid."},status=400)
             else:
                 hashed_password  = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             decoded_password = hashed_password.decode('utf-8') 
 
             User(
                 name     = name,
-                phone    = aphone,
                 email    = email,
                 password = decoded_password
                 ).save()
