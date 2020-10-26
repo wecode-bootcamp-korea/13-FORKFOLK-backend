@@ -13,6 +13,7 @@ class ShopCategory(models.Model):
 class Product(models.Model):
     category         = models.ForeignKey(ShopCategory, on_delete=models.CASCADE)
     name             = models.CharField(max_length=50)
+    price            = models.DecimalField(default=0, max_digits=5, decimal_places=2) 
     description      = models.TextField()
     shipping         = models.TextField()
     orders           = models.ManyToManyField('order.Order', through='Cart', related_name='orders')
