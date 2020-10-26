@@ -8,19 +8,13 @@ class MainCategory(models.Model):
 
 class SubCategory(models.Model):
     name     = models.CharField(max_length=50)
-    main_sub = models.ManyToManyField(MainCategory, through='MainSub')
+    main_sub = models.ManyToManyField(MainCategory, through='Story')
 
     class Meta:
         db_table = 'sub_categories'
 
-class MainSub(models.Model):
-    main_category = models.ForeignKey(MainCategory, on_delete=models.CASCADE)
-    sub_category  = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'main_sub_categories'
-
 class Story(models.Model):
+    main_category   = models.ForeignKey(MainCategory, on_delete=models.CASCADE)
     sub_category    = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
     title           = models.CharField(max_length=100)
     content         = models.TextField()
