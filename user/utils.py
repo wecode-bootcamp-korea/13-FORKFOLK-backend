@@ -7,12 +7,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from my_settings import SECRET,ALGORITHM
 from user.models import User
 
-def user_decorator(func):
+def user_validator(func):
     def wrapper(self,request, *args, **kwargs):
         try:
             token = request.headers.get('Authorization', None)
             payload = jwt.decode(token, SECRET["secret"], ALGORITHM["algorithm"])
-            user = User.objects.get(email=payload['email'])
+            user = User.objects.get(id=payload["id"])
             request.user = user
 
         except jwt.exceptions.DecodeError:

@@ -21,7 +21,6 @@ from product.models   import (
 class ShopAllView(View):
     def get(self,request):
         try:
-            product_list  = []
             category_list = []
             category_name = request.GET.get("category",None)
 
@@ -31,12 +30,12 @@ class ShopAllView(View):
             if category_name == "All":
                 products = Product.objects.all()
 
-                [product_list.append({
+                product_list = [{
                     "id"       : product.id,
                     "name"     : product.name,
                     "category" : ShopCategory.objects.get(id=product.category_id).name,
                     "price"    : product.price,
-                    "image"    : ProductImage.objects.filter(product_id=product.id).values('image_url')[0].get("image_url")}) for product in products]
+                    "image"    : ProductImage.objects.filter(product_id=product.id).values('image_url')[0].get("image_url")} for product in products]
 
                 random.shuffle(product_list)
                 page      = page_num
@@ -53,12 +52,12 @@ class ShopAllView(View):
             else:
                 category_id   = ShopCategory.objects.get(name=category_name)
                 products = Product.objects.filter(category_id=category_id)
-                [product_list.append({
+                product_list = [{
                     "id"       : product.id,
                     "name"     : product.name,
                     "category" : ShopCategory.objects.get(id=product.category_id).name,
                     "price"    : product.price,
-                    "image"    : ProductImage.objects.filter(product_id=product.id).values('image_url')[0].get("image_url")}) for product in products]
+                    "image"    : ProductImage.objects.filter(product_id=product.id).values('image_url')[0].get("image_url")} for product in products]
 
                 return JsonResponse({"category_products":product_list},status=201)
 
