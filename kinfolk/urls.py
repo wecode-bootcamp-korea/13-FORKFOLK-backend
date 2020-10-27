@@ -2,5 +2,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('my-account',include('user.urls')),
-    path('shop',include('product.urls'))
+    path('products',include('product.urls'))
 ]
