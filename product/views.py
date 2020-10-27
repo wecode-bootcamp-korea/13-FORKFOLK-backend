@@ -53,21 +53,12 @@ class ShopAllView(View):
             else:
                 category_id   = ShopCategory.objects.get(name=category_name)
                 products = Product.objects.filter(category_id=category_id)
-
-                for product in products:
-                    product_id = product.id
-                    name       = product.name
-                    price      = product.price
-                    category   = ShopCategory.objects.get(id=product.category_id)
-
-                    product_dic             = {}
-                    product_dic["id"]       = product_id
-                    product_dic["name"]     = name
-                    product_dic["category"] = category.name
-                    product_dic["price"]    = price
-                    product_dic["image"]    = ProductImage.objects.filter(product_id=product_id).values('image_url')[0].get("image_url")
-
-                    product_list.append(product_dic)
+                [product_list.append({
+                    "id" : product.id,
+                    "name" : product.name,
+                    "category" : ShopCategory.objects.get(id=product.category_id).name,
+                    "price" : product.price,
+                    "image" : ProductImage.objects.filter(product_id=product.id).values('image_url')[0].get("image_url")}) for product in products]
 
                 return JsonResponse({"category_products":product_list},status=201)
 
