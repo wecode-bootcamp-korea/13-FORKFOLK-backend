@@ -1,4 +1,5 @@
 import json
+import random
 
 from django.views import View
 from django.http  import JsonResponse, HttpResponse
@@ -34,6 +35,7 @@ class StoryDetailView(View):
             story               = Story.objects.get(id = story_id_from_front)
             image               = StoryImage.objects.filter(story_id = story_id_from_front).values()
             related_stories     = Story.objects.filter(main_category_id = story.main_category_id)
+            random_stories      = random.sample(list(related_stories), 6)
             story_detail        = []
             related_list        = []
             story_detail.append({
@@ -45,7 +47,7 @@ class StoryDetailView(View):
                 "image_url2"  : image[1]['image_url'],
                 "image_url3"  : image[2]['image_url']
             })
-            for related_story in related_stories:
+            for related_story in random_stories:
                 related_list.append({
                     "id"        : related_story.id,
                     "title"     : related_story.title,
