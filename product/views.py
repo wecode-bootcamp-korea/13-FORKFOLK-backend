@@ -20,7 +20,7 @@ from product.models   import (
 
 class ShopAllView(View):
     def get(self,request):
-        try: 
+        try:
             product_list  = []
             category_list = []
             category_name = request.GET.get("category",None)
@@ -49,7 +49,7 @@ class ShopAllView(View):
                 page_size = 12
                 limit     = page * page_size
                 offset    = limit - page_size
-                
+
                 return JsonResponse({"page_products":product_list[offset:limit]}, status=201)
 
             else:
@@ -86,8 +86,7 @@ class ShopDetailView(View):
             product = Product.objects.get(id=product_id)
             related_from = product.category_id
             related_to = Product.objects.filter(category_id=related_from)
-            image = ProductImage.objects.filter(product_id=product.id).values("image_url")[0].get("image_url")
-        
+            image = ProductImage.objects.filter(product_id=product.id).values("image_url")[0].get("image_url") 
             related_list = []
             detail_product   = {
                 "id"          : product.id,
@@ -119,4 +118,5 @@ class ShopDetailView(View):
             return JsonResponse({'message':'VALUE_ERROR'},status=400)
         except TypeError:
             return JsonResponse({'message':'TYPE_ERROR'},status=400)
-
+        except:
+            return JsonResponse({'message':'PAGE_ERROR'},status=400)
