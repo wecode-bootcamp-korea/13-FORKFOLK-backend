@@ -45,12 +45,17 @@ class ShopAllView(View):
                     product_dic["image"]    = ProductImage.objects.filter(product_id=product_id).values('image_url')[0].get("image_url")
 
                     product_list.append(product_dic)
+                random.shuffle(product_list)
                 page      = page_num
                 page_size = 12
                 limit     = page * page_size
                 offset    = limit - page_size
+                page_list = product_list[offset:limit]
 
-                return JsonResponse({"page_products":product_list[offset:limit]}, status=201)
+                if not page_list:
+                    return JsonResponse({"massage":"PAGE_ERROR"}, status=409)
+
+                return JsonResponse({"page_products":page_list}, status=201)
 
             else:
                 category_id   = ShopCategory.objects.get(name=category_name)
@@ -74,11 +79,13 @@ class ShopAllView(View):
                 return JsonResponse({"category_products":product_list},status=201)
 
         except KeyError:
-            return JsonResponse({'message':'KEY_ERROR'},status=400)
+            return JsonResponse({'message':'KEY_ERROR'},status=409)
         except ValueError:
-            return JsonResponse({'message':'VALUE_ERROR'},status=400)
+            return JsonResponse({'message':'VALUE_ERROR'},status=409)
         except TypeError:
-            return JsonResponse({'message':'TYPE_ERROR'},status=400)
+            return JsonResponse({'message':'TYPE_ERROR'},status=409)
+        except:
+            return JsonResponse({'message':'PAGE_ERROR'},status=409)
 
 class ShopDetailView(View):
     def get(self,request,product_id):
@@ -113,10 +120,10 @@ class ShopDetailView(View):
             return JsonResponse({'product_info':detail_product,'related_product':random_list},status=201)
 
         except KeyError:
-            return JsonResponse({'message':'KEY_ERROR'},status=400)
+            return JsonResponse({'message':'KEY_ERROR'},status=409)
         except ValueError:
-            return JsonResponse({'message':'VALUE_ERROR'},status=400)
+            return JsonResponse({'message':'VALUE_ERROR'},status=409)
         except TypeError:
-            return JsonResponse({'message':'TYPE_ERROR'},status=400)
+            return JsonResponse({'message':'TYPE_ERROR'},status=409)
         except:
-            return JsonResponse({'message':'PAGE_ERROR'},status=400)
+            return JsonResponse({'message':'PAGE_ERROR'},status=409)
