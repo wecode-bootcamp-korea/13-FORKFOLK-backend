@@ -113,10 +113,10 @@ class ShopDetailView(View):
             
             return JsonResponse({'product_info':detail_product,'related_product':random_list},status=201)
 
-          except KeyError:
-              return JsonResponse({'message':'KEY_ERROR'},status=400)
-          except ValueError:
-              return JsonResponse({'message':'VALUE_ERROR'},status=400)
-          except TypeError:
-              return JsonResponse({'message':'TYPE_ERROR'},status=400)
+        except KeyError:
+            return JsonResponse({'message':'KEY_ERROR'},status=400)
+        except ValueError:
+            return JsonResponse({'message':'VALUE_ERROR'},status=400)
+        except TypeError:
+            return JsonResponse({'message':'TYPE_ERROR'},status=400)
 
