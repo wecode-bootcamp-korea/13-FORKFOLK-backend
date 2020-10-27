@@ -30,13 +30,13 @@ class ShopAllView(View):
 
             if category_name == "All":
                 products = Product.objects.all()
-                
+
                 [product_list.append({
-                    "id" : product.id,
-                    "name" : product.name,
+                    "id"       : product.id,
+                    "name"     : product.name,
                     "category" : ShopCategory.objects.get(id=product.category_id).name,
-                    "price" : product.price,
-                    "image" : ProductImage.objects.filter(product_id=product.id).values('image_url')[0].get("image_url")}) for product in products]
+                    "price"    : product.price,
+                    "image"    : ProductImage.objects.filter(product_id=product.id).values('image_url')[0].get("image_url")}) for product in products]
 
                 random.shuffle(product_list)
                 page      = page_num
@@ -54,11 +54,11 @@ class ShopAllView(View):
                 category_id   = ShopCategory.objects.get(name=category_name)
                 products = Product.objects.filter(category_id=category_id)
                 [product_list.append({
-                    "id" : product.id,
-                    "name" : product.name,
+                    "id"       : product.id,
+                    "name"     : product.name,
                     "category" : ShopCategory.objects.get(id=product.category_id).name,
-                    "price" : product.price,
-                    "image" : ProductImage.objects.filter(product_id=product.id).values('image_url')[0].get("image_url")}) for product in products]
+                    "price"    : product.price,
+                    "image"    : ProductImage.objects.filter(product_id=product.id).values('image_url')[0].get("image_url")}) for product in products]
 
                 return JsonResponse({"category_products":product_list},status=201)
 
@@ -75,32 +75,33 @@ class ShopDetailView(View):
     def get(self,request,product_id):
         try:
             product = Product.objects.get(id=product_id)
+
             related_from = product.category_id
             related_to = Product.objects.filter(category_id=related_from)
-            image = ProductImage.objects.filter(product_id=product.id).values("image_url")[0].get("image_url") 
+
+            image = ProductImage.objects.filter(product_id=product.id).values("image_url")[0].get("image_url")
+
             related_list = []
+
             detail_product   = {
                 "id"          : product.id,
                 "name"        : product.name,
                 "price"       : product.price,
                 "description" : product.description,
                 "shipping"    : product.shipping,
-                "image"       : 
+                "image"       :
                 [image for image in ProductImage.objects.filter(product_id=product.id).values('image_url')]
             }
 
-            for product in related_to:
-                related_product            = {}
-                related_product["id"]      = product.id
-                related_product["name"]    = product.name
-                related_product["image"]   = image
-                related_product["categoy"] = ShopCategory.objects.get(id=product.category_id).name
-                related_product["price"]   = product.price
-
-                related_list.append(related_product)
+            [related_list.append({
+                "id"       : product.id,
+                "name"     : product.name,
+                "image"    : image,
+                "category" : ShopCategory.objects.get(id=product.category_id).name,
+                "price"    : product.price}) for product in related_to]
 
             random_list = random.sample(related_list,6)
-            
+
             return JsonResponse({'product_info':detail_product,'related_product':random_list},status=201)
 
         except KeyError:
