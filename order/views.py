@@ -55,7 +55,7 @@ class OrderView(View):
             product_list = [{
                 "id"       : cart["product_id"],
                 "quantity" : cart["quantity"],
-                "name"     : Product.objects.get(id=cart["product_id"]).name,# id=id로 테스트 해보기
+                "name"     : Product.objects.get(id=cart["product_id"]).name,
                 "image"    : ProductImage.objects.filter(product_id=cart["product_id"]).values('image_url')[0].get("image_url"),
                 "price"    : Product.objects.get(id=cart["product_id"]).price
             } for cart in cart_list]
