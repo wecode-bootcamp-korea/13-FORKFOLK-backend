@@ -49,12 +49,12 @@ class StoryDetailView(View):
                 "image_list"  : image_list,
             })            
             related_stories = [{
-                "id"        : related_story.id,
-                "title"     : related_story.title,
-                "content"   : related_story.content,
+                "id"            : related_story.id,
+                "title"         : related_story.title,
+                "content"       : related_story.content,
                 "main_category" : MainCategory.objects.get(id = related_story.main_category_id).name,
-                "issue"     : SubCategory.objects.get(id = related_story.sub_category_id).name,
-                "image_url" : StoryImage.objects.filter(story_id = related_story.id)[0].image_url
+                "issue"         : SubCategory.objects.get(id = related_story.sub_category_id).name,
+                "image_url"     : StoryImage.objects.filter(story_id = related_story.id)[0].image_url
             } for related_story in Story.objects.filter(main_category_id = story.main_category_id).order_by('?')[:6]]          
             return JsonResponse({"message":"SUCCESS!", "story_detail": story_detail, "related_stories": related_stories}, status=200)
         except KeyError:
