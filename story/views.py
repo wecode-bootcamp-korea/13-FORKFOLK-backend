@@ -22,6 +22,7 @@ class StoryListView(View):
                 "id"        : recycle_story.id,
                 "title"     : recycle_story.title,
                 "content"   : recycle_story.content,
+                "issue"     : SubCategory.objects.get(id = recycle_story.sub_category_id).name,
                 "image_url" : StoryImage.objects.filter(story_id = recycle_story.id)[0].image_url
             } for recycle_story in Story.objects.filter(Q(id__gt=40) & Q(id__lt=61)).order_by('?')[:18]]    
             return JsonResponse({"message":"SUCCESS!", "story_list": story_list[:10], "recycle_stories": recycle_stories}, status=200)
@@ -51,6 +52,8 @@ class StoryDetailView(View):
                 "id"        : related_story.id,
                 "title"     : related_story.title,
                 "content"   : related_story.content,
+                "main_category" : MainCategory.objects.get(id = related_story.main_category_id).name,
+                "issue"     : SubCategory.objects.get(id = related_story.sub_category_id).name,
                 "image_url" : StoryImage.objects.filter(story_id = related_story.id)[0].image_url
             } for related_story in Story.objects.filter(main_category_id = story.main_category_id).order_by('?')[:6]]          
             return JsonResponse({"message":"SUCCESS!", "story_detail": story_detail, "related_stories": related_stories}, status=200)
