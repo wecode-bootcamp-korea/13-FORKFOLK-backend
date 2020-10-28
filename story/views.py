@@ -37,6 +37,7 @@ class StoryDetailView(View):
         try:
             story               = Story.objects.get(id = story_id)
             image               = StoryImage.objects.filter(story_id = story_id).values()
+            image_list          = [image["image_url"] for image in StoryImage.objects.filter(story_id = story_id).values("image_url")]
             story_detail        = []
             story_detail.append({
                 "id"          : story.id,
@@ -44,10 +45,8 @@ class StoryDetailView(View):
                 "content"     : story.content,
                 "description" : story.description,
                 "issue"       : SubCategory.objects.get(id = story.sub_category_id).name,
-                "image_url1"  : image[0]['image_url'],
-                "image_url2"  : image[1]['image_url'],
-                "image_url3"  : image[2]['image_url']
-            })
+                "image_list"  : image_list,
+            })            
             related_stories = [{
                 "id"        : related_story.id,
                 "title"     : related_story.title,
