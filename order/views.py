@@ -46,8 +46,9 @@ class OrderView(View):
     @user_validator
     def get(self,request):
         try:
-            data      = json.loads(request.body)
-            status    = OrderStatus.objects.get(status = data["status"])
+            #data      = json.loads(request.body)
+            from_status = request.GET.get("status")
+            status    = OrderStatus.objects.get(status = from_status)
             user      = request.user
             order_id  = Order.objects.get(user_id=user.id, status=status.id).id
             cart_list = Cart.objects.filter(order_id=order_id).values()
@@ -60,7 +61,7 @@ class OrderView(View):
                 "price"    : Product.objects.get(id=cart["product_id"]).price
             } for cart in cart_list]
 
-            return JsonResponse({"in cart list":product_list},status=201)
+            return JsonResponse({"in_cart_list":product_list},status=201)
 
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'},status=409)
@@ -77,20 +78,23 @@ class OrderView(View):
             user      = request.user
             order_id  = Order.objects.get(user_id=user.id, status=status.id).id
             cart_list = Cart.objects.filter(order_id=order_id).values()
+            print(cart_list)
 
-            del_product = Product.objects.get(id=data["product_id"])
+            del_product = Product.objects.get(id=data["product_id"]).id
             in_cart = Cart.objects.get(product_id=del_product)
             in_cart.delete()
+
+            print(cart_list)
 
             product_list = [{
                 "id"       : cart["product_id"],
                 "quantity" : cart["quantity"],
-                "name"     : Product.objects.get(id=cart["product_id"]).name,# id=id로 테스트 해보기
+                "name"     : Product.objects.get(id=cart["product_id"]).name,
                 "image"    : ProductImage.objects.filter(product_id=cart["product_id"]).values('image_url')[0].get("image_url"),
                 "price"    : Product.objects.get(id=cart["product_id"]).price
             } for cart in cart_list]
 
-            return JsonResponse({"remain list":Product_list}, status=200)
+            return JsonResponse({"remain_list":product_list}, status=200)
 
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'},status=409)
