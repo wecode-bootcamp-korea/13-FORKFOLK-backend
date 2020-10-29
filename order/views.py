@@ -29,7 +29,15 @@ class OrderView(View):
         status   = OrderStatus.objects.get(status = data["status"])
         try:
             order = Order.objects.get(user_id=user.id, status_id=status.id)
-            Cart.objects.create(product_id=product.id, order_id=order.id, quantity=quantity)
+
+            if Cart.objects.filter(product_id=product.id):
+                select_product          = Cart.objects.get(product_id=product.id)
+                select_product.quantity = quantity
+                select_product.save()
+
+            else:
+                Cart.objects.create(product_id=product.id, order_id=order.id, quantity=quantity)
+
             return JsonResponse({"message":"SUCCESS!"}, status=201)
 
         except Order.DoesNotExist:
@@ -78,13 +86,10 @@ class OrderView(View):
             user      = request.user
             order_id  = Order.objects.get(user_id=user.id, status=status.id).id
             cart_list = Cart.objects.filter(order_id=order_id).values()
-            print(cart_list)
 
             del_product = Product.objects.get(id=data["product_id"]).id
             in_cart = Cart.objects.get(product_id=del_product)
             in_cart.delete()
-
-            print(cart_list)
 
             product_list = [{
                 "id"       : cart["product_id"],
@@ -93,7 +98,7 @@ class OrderView(View):
                 "image"    : ProductImage.objects.filter(product_id=cart["product_id"]).values('image_url')[0].get("image_url"),
                 "price"    : Product.objects.get(id=cart["product_id"]).price
             } for cart in cart_list]
-
+            print(product_list)
             return JsonResponse({"remain_list":product_list}, status=200)
 
         except KeyError:

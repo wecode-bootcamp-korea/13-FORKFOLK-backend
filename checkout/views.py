@@ -26,10 +26,9 @@ class CheckOutView(View):
     @user_validator
     def get(self,request):
         try:
-            data      = json.loads(request.body)
-            status    = OrderStatus.objects.get(status = data["status"])
+            status    = OrderStatus.objects.get(status = request.GET.get("status"))
             user      = request.user
-            order_id  = Order.objects.get(user_id=user.id, status=status.id).id
+            order_id  = Order.objects.get(user_id=user.id, status_id=status.id).id
             cart_list = Cart.objects.filter(order_id=order_id).values()
 
             checkout_list = [{
