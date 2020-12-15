@@ -36,6 +36,6 @@
 1. 데이터베이스 모델링 및 데이터베이스 구축
 1. 팀원 파트 분배 및 작업 진행
 
-- 박현희:
+- 박현희: Login, Signin, Product page, Product Detail page
 - 성규원: Core Contents Page, Content Detail page
 - 공동: Order Page, Checkout Page
